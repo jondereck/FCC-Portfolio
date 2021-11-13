@@ -1,4 +1,4 @@
-# Jon Deereck Nifas: Microservice Projects for FCC
+# Jon Dereck Nifas: Microservice Projects for FCC
 
 
 ### Description:
