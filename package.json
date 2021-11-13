@@ -1,0 +1,33 @@
+{
+	"name": "jondereck-portfolio-app",
+	"version": "0.0.1",
+	"description": "Jon Dereck's FCC Backend Challenge",
+	"engines": {
+		"node": "12.x"
+	},
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"dependencies": {
+		"express": "^4.15.4",
+		"ejs": "^3.1.5",
+		"cors": "^2.8.0"
+	},
+	"devDependencies": {
+		"got": "^11.3.0",
+		"tape": "^4.7.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jdn/jondereck-portfolio-app"
+	},
+	"keywords": [
+		"heroku",
+		"node",
+		"hyperdev",
+		"express",
+		"freecodecamp"
+	],
+	"license": "MIT"
+}
