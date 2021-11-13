@@ -4,6 +4,7 @@
 // init project
 var express = require('express');
 var app = express();
+var port = process.env.PORT || 3000;
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -24,6 +25,16 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/timestamp", function (req, res) {
+  res.sendFile(__dirname + '/views/timestamp.html' );
+});
+
+
+app.get("/parser", function (req, res) {
+  res.sendFile(__dirname + '/views/parser.html');
+});
+
+
 
 
 // listen for requests :)
@@ -39,6 +50,23 @@ app.get("/api/", function (req, res) {
     utc: new Date().toUTCString(),
   };
   res.json(dateApiObject);
+});
+
+// whoami API endpoint... 
+app.get("/api/whoami", function (req, res) {
+
+  let whoamiApiResObj = {
+    ipaddress: req.ip,
+    language: req.headers['accept-language'],
+    software: req.headers['user-agent'],
+}
+
+res.json(whoamiApiResObj);
+console.log(`
+  ipaddress : ${whoamiApiResObj.ipaddress} \n
+  language:  ${whoamiApiResObj.language} \n
+  software: ${ whoamiApiResObj.software} \n  
+`)
 });
 
 // API endpoint for date parameters
@@ -59,4 +87,8 @@ app.get("/api/:date", function (req, res) {
     });
   }
 });
+
+
+
+
 
