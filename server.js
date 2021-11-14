@@ -11,6 +11,8 @@ dotenv.config();
 const bodyParser = require('body-parser')
 const dns = require('dns');
 
+
+
 // DB Packages
 const mongodb = require("mongodb");
 const mongoose = require("mongoose");
@@ -70,6 +72,32 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+
+const multer = require('multer');
+
+let storage = multer.memoryStorage()
+let upload = multer({ storage: storage }).single('upfile');
+
+app.post('/api/fileanalyse', (req, res) => {
+  upload(req, res, (err) => {
+     if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading.
+       res.send(err)
+    } else if (err) {
+      // An unknown error occurred when uploading.
+       res.send(err)
+     } else {
+       console.log('file uploaded');
+       res.json({
+         name: req.file.originalname,
+         type: req.file.mimetype,
+         size: req.file.size
+       })
+    }
+  })
+  
+})
+
 //FCC PROBLEM 4
 
 
@@ -116,12 +144,13 @@ app.post("/api/users/:_id/exercises", (req, res) => {
     duration: parseInt(req.body.duration),
     description: req.body.description,
   };
-
+ 
   if (!req.body.date) {
     newExercise.date = new Date();
   }
 
   User.findByIdAndUpdate(
+    
     req.params._id,
     { $push: { log: newExercise } },
     { new: true },
@@ -143,6 +172,7 @@ app.post("/api/users/:_id/exercises", (req, res) => {
             date: new Date(newExercise.date).toDateString(),
           };
           res.json(newExerciseApiObj);
+         
         }
       }
     }
@@ -211,6 +241,8 @@ app.get("/api/users/:_id/logs", (req, res) => {
     }
   });
 });
+
+
 
 
 

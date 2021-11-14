@@ -70,7 +70,7 @@
   
   .footer {
 	padding: 50px 0px;
-	position: fixed;
+	position:relative;
 	bottom: 0;
 	width: 100%;
 	background-color: #00bf8f;
@@ -418,4 +418,27 @@ html {
   
   
   
+  
+  
+
+  form{
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	min-width: 500px;
+	border-radius: 3px;
+	background-color: #fefefe;
+	color: #1D1F20
+  }
+  
+  input[type='submit']{
+	background-color: #453b50 !important;
+	color: #FCF0F2 !important;
+  }
+  
+  input[type='text']{
+	min-width: 400px;
+  }
   
