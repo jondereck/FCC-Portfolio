@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>URL Shortener Microservice</title>
+    <link
+      rel="shortcut icon"
+      href="https://i.ibb.co/RP8m7mj/logo2.png"
+      
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <div class="header">
+        <h1>URL Shortener Microservice</h1>
+      </div>
+
+      <div class="container">
+    <form action="api/shorturl/" method="POST">
+  
+      <h3>URL to be shortened</h3>
+        
+      <input
+        id="url_input"
+        type="text"
+        name="url"
+        value="https://www.freecodecamp.org"
+      />
+      <input type="submit" value="Shorten" />
+    </form>
+    </div>
+    <div class="footer">
+        <p>By <a href="https://github.com/jondereck">Jon Dereck Nifas</a></p>
+      </div>
+  </body>
+</html>
