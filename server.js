@@ -27,8 +27,14 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => console.log("MongoDB connection established \n"));
 
+// * Exercise Schema
+const exerciseSchema = new Schema({
+  date: { type: Date },
+  duration: { type: Number },
+  description: { type: String },
+});
 
-// Schema
+// * User Schema
 const usersSchema = new Schema({
   username: {
     type: String,
@@ -38,21 +44,12 @@ const usersSchema = new Schema({
   count: {
     type: Number,
   },
-  log: [
-    {
-      description: { type: String },
-      duration: { type: Number },
-      date: { type: Date },
-    },
-  ],
+  log: [exerciseSchema],
 });
 
-// Model
+// * Model
+const Exercise = mongoose.model("Exercise", exerciseSchema);
 const User = mongoose.model("User", usersSchema);
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
 
 
 
@@ -71,9 +68,6 @@ app.use(express.static('public'));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
-
-
-// * Users API
 
 app.post("/api/users", (req, res) => {
   if (req.body.username === "") {
@@ -99,49 +93,12 @@ app.post("/api/users", (req, res) => {
   }
 });
 
-// * POST Exercise
-
-app.post("/api/users/:_id/exercises", (req, res) => {
-  var formattedDate;
-  if (req.body.date === "") {
-    formattedDate = new Date().toDateString();
-  } else {
-    formattedDate = new Date(req.body.date).toDateString();
-  }
-
-  let exerciseEntry = {
-    date: formattedDate,
-    duration: parseInt(req.body.duration),
-    description: req.body.description,
-  };
-
-  User.findByIdAndUpdate(
-    { _id: req.body[":_id"] },
-    { $push: { log: exerciseEntry } },
-    { new: true },
-    (err, updatedUserObject) => {
-      if (err) {
-        console.error(err);
-        res.send(err);
-      } else {
-        updatedUserObject.count = updatedUserObject.log.length;
-        updatedUserObject.date = formattedDate;
-        console.log(updatedUserObject);
-        res.json({
-          _id: updatedUserObject._id,
-          username: updatedUserObject.username,
-          date: exerciseEntry.date,
-          duration: exerciseEntry.duration,
-          description: exerciseEntry.description,
-        });
-      }
-    }
-  );
-});
-
 /*
- * GET Users Method
- */
+? TEST 3
+* You can make a GET request to /api/users to get an array
+* of all users. Each element in the array is an object 
+* containing a user's username and _id.
+*/
 
 app.get("/api/users", async (req, res) => {
   await User.find({}, (err, resultDocs) => {
@@ -149,21 +106,127 @@ app.get("/api/users", async (req, res) => {
       console.error(err);
       res.send(err);
     } else {
-      console.log(resultDocs);
       res.json(resultDocs);
     }
   });
 });
 
 /*
- * GET Users with ID and their logs
- */
-app.get("/api/users/:_id/logs", async (req, res) => {
-  await User.findById(req.params["_id"], (err, searchResult) => {
+? TEST 4
+* You can POST to /api/users/:_id/exercises with form data 
+* description, duration, and optionally date. If no date is 
+* supplied, the current date will be used. The response returned 
+* will be the user object with the exercise fields added.
+*/
+
+app.post("/api/users/:_id/exercises", (req, res) => {
+  var newExercise = {
+    date: req.body.date,
+    duration: parseInt(req.body.duration),
+    description: req.body.description,
+  };
+
+  if (!req.body.date) {
+    newExercise.date = new Date();
+  }
+
+  User.findByIdAndUpdate(
+    req.params._id,
+    { $push: { log: newExercise } },
+    { new: true },
+    (err, userUpdate) => {
+      if (err) {
+        console.error(err);
+        res.send(err);
+      } else {
+        if (!userUpdate) {
+          res.json({
+            error: "_id does not exist",
+          });
+        } else {
+          let newExerciseApiObj = {
+            username: userUpdate.username,
+            description: newExercise.description,
+            duration: newExercise.duration,
+            _id: userUpdate._id,
+            date: new Date(newExercise.date).toDateString(),
+          };
+          res.json(newExerciseApiObj);
+        }
+      }
+    }
+  );
+});
+
+/*
+? TEST 5.1
+* You can make a GET request to /api/users/:_id/logs to retrieve a 
+* full exercise log of any user. The returned response will be the user
+* object with a log array of all the exercises added. Each log item has 
+* the description, duration, and date properties.
+
+? TEST 5.2 
+* A request to a user's log (/api/users/:_id/logs) returns an object 
+* with a count property representing the number of exercises returned.
+
+? TEST 5.3
+* You can add from, to and limit parameters to a /api/users/:_id/logs 
+* request to retrieve part of the log of any user. from and to are dates 
+* in yyyy-mm-dd format. limit is an integer of how many logs to send back.
+*/
+
+app.get("/api/users/:_id/logs", (req, res) => {
+  let userId = req.params._id;
+  // let from;
+  // let to;
+  // let limit;
+  User.findById(userId, (err, searchResult) => {
     if (err) {
-      console.error(err);
-      res.send(err);
+      res.json({
+        error: "_id does not exist",
+      });
     } else {
+      // *getting query string parameters if they are given
+
+      if (req.query.from) {
+        from = new Date(req.query.from).getTime();
+      }
+      if (req.query.to) {
+        to = new Date(req.query.to).getTime();
+      }
+
+      /*
+       * Filter of Array will be done using the EPOCH date
+       */
+
+      if (req.query.from !== undefined && req.query.to !== undefined) {
+        searchResult.log = searchResult.log.filter((filteredLogs) => {
+          let exerciseDate = new Date(filteredLogs.date).getTime();
+          return exerciseDate >= from && exerciseDate <= to;
+        });
+      }
+
+      if (req.query.from !== undefined) {
+        searchResult.log = searchResult.log.filter((filteredLogs) => {
+          let exerciseDate = new Date(filteredLogs.date).getTime();
+          return exerciseDate >= from;
+        });
+      }
+
+      if (req.query.to !== undefined) {
+        searchResult.log = searchResult.log.filter((filteredLogs) => {
+          let exerciseDate = new Date(filteredLogs.date).getTime();
+          return exerciseDate <= to;
+        });
+      }
+
+      // * limiting the results of filtered logs
+
+      if (req.query.limit !== undefined) {
+        limit = req.query.limit;
+        searchResult.log = searchResult.log.slice(0, limit);
+      }
+
       res.json({
         _id: searchResult._id,
         username: searchResult.username,
@@ -173,8 +236,6 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     }
   });
 });
-
-
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
