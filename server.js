@@ -6,24 +6,26 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
+const dotenv = require("dotenv");
+dotenv.config();
 const bodyParser = require('body-parser')
 const dns = require('dns');
 
-// // DB Packages
-// const mongodb = require("mongodb");
-// const mongoose = require("mongoose");
-// const Schema = mongoose.Schema;
+// DB Packages
+const mongodb = require("mongodb");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-// // MongoDB connection
-// mongoose.connect(process.env.MONGO_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// // MongoDB connection confirmation and error handling
-// const db = mongoose.connection;
-// db.on("error", console.error.bind(console, "connection error:"));
-// db.once("open", () => console.log("MongoDB connection established \n"));
+// MongoDB connection confirmation and error handling
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => console.log("MongoDB connection established \n"));
 
 
 
