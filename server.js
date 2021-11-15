@@ -37,7 +37,7 @@ db.once("open", () => console.log("MongoDB connection established \n"));
 
 // * Exercise Schema
 const exerciseSchema = new Schema({
-  date: { type: Date },
+  date: { type: String },
   duration: { type: Number },
   description: { type: String },
 });
