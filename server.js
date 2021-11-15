@@ -70,7 +70,7 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-/FCC PROBLEM 4
+//FCC PROBLEM 4
 
 
 app.post("/api/users", (req, res) => {
