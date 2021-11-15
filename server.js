@@ -6,6 +6,11 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
+const multer = require('multer');
+
+let storage = multer.memoryStorage()
+let upload = multer({ storage: storage }).single('upfile');
+
 const dotenv = require("dotenv");
 dotenv.config();
 const bodyParser = require('body-parser')
@@ -55,7 +60,6 @@ const Exercise = mongoose.model("Exercise", exerciseSchema);
 const User = mongoose.model("User", usersSchema);
 
 
-
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
@@ -73,30 +77,8 @@ app.get("/", function (req, res) {
 });
 
 
-const multer = require('multer');
 
-let storage = multer.memoryStorage()
-let upload = multer({ storage: storage }).single('upfile');
 
-app.post('/api/fileanalyse', (req, res) => {
-  upload(req, res, (err) => {
-     if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-       res.send(err)
-    } else if (err) {
-      // An unknown error occurred when uploading.
-       res.send(err)
-     } else {
-       console.log('file uploaded');
-       res.json({
-         name: req.file.originalname,
-         type: req.file.mimetype,
-         size: req.file.size
-       })
-    }
-  })
-  
-})
 
 //FCC PROBLEM 4
 
@@ -230,6 +212,11 @@ app.get("/api/users/:_id/logs", (req, res) => {
       if (req.query.limit !== undefined) {
         limit = req.query.limit;
         searchResult.log = searchResult.log.slice(0, limit);
+      }
+
+      for(let i= 0; i < searchResult.log.length; i++){
+        searchResult.log[i]['date'] = new Date(searchResult.log[i]
+        ['date']).toDateString()
       }
 
       res.json({
@@ -402,3 +389,22 @@ app.get('/api/shorturl/:id', (req, res) => {
   }
 })
 
+app.post('/api/fileanalyse', (req, res) => {
+  upload(req, res, (err) => {
+     if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading.
+       res.send(err)
+    } else if (err) {
+      // An unknown error occurred when uploading.
+       res.send(err)
+     } else {
+       console.log('file uploaded');
+       res.json({
+         name: req.file.originalname,
+         type: req.file.mimetype,
+         size: req.file.size
+       })
+    }
+  })
+  
+})
