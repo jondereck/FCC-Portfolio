@@ -19,7 +19,7 @@
   }
   
   .header {
-	background-color: #00bf8f;
+	background-color: #DB545A;
   }
   
   h1 {
@@ -70,16 +70,33 @@
   
   .footer {
 	padding: 50px 0px;
-	position:relative;
+	position:fixed;
 	bottom: 0;
 	width: 100%;
-	background-color: #00bf8f;
+	background-color: #DB545A;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
   }
-  
+  .tra_footer {
+    padding: 50px 0px;
+    position:relative;
+    bottom: 0;
+    width: 100%;
+    background-color: #DB545A;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    }
+    
+    .tra_footer p {
+      color: white;
+      font-size: 15px;
+    }
+      
   .footer p {
 	color: white;
 	font-size: 15px;
