@@ -1,0 +1,12 @@
+https://jondereck-portfolio-fcc.herokuapp.com/
+https://github.com/jondereck/jondereck-portfolio-app
+
+619106af550e3e414356a712
+61906509f4814e5f00df5a2c
+
+git status
+git add .
+git commit -a "Upgrade serve.js"
+git push 
+
+git push heroku HEAD:master
