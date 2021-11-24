@@ -6,7 +6,7 @@ https://github.com/jondereck/jondereck-portfolio-app
 
 git status
 git add .
-git commit -a "Upgrade serve.js"
+git commit -m "Upgrade server.js"
 git push 
 
 git push heroku HEAD:master
